@@ -21,7 +21,33 @@ st.set_page_config(
     layout="wide",
     initial_sidebar_state="expanded",
 )
+# ═══════════════════════════════════════════════════════════════════════════════
+# ①.b CONTROL DE ACCESO (LOGIN)
+# ═══════════════════════════════════════════════════════════════════════════════
 
+# Inicializamos el estado de autenticación si no existe
+if "authenticated" not in st.session_state:
+    st.session_state.authenticated = False
+
+# Si no está autenticado, mostramos el login y DETENEMOS la app
+if not st.session_state.authenticated:
+    # Un diseño centrado y simple para el login
+    col1, col2, col3 = st.columns([1, 2, 1])
+    with col2:
+        st.markdown("<br><br><br>", unsafe_allow_html=True)
+        st.markdown("<h2 style='text-align: center;'>🔒 Acceso Restringido</h2>", unsafe_allow_html=True)
+        st.markdown("<p style='text-align: center; color: var(--text-muted);'>Ingresá la contraseña familiar para gestionar el álbum.</p>", unsafe_allow_html=True)
+        
+        pwd_input = st.text_input("Contraseña", type="password", label_visibility="collapsed")
+        
+        if st.button("Ingresar", use_container_width=True):
+            if pwd_input == st.secrets["APP_PASSWORD"]:
+                st.session_state.authenticated = True
+                st.rerun()  # Recarga la página ya autenticado
+            else:
+                st.error("❌ Contraseña incorrecta.")
+    
+    st.stop() # <- CLAVE: Esto evita que el resto de app.py se ejecute si no hay login
 # ═══════════════════════════════════════════════════════════════════════════════
 # ② CONSTANTES
 # ═══════════════════════════════════════════════════════════════════════════════
